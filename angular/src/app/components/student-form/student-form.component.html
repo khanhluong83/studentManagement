@@ -1,0 +1,61 @@
+<h3>Student Form</h3>
+
+<div class="row mt-3">
+  <div class="col-12">
+    <form #studentForm = "ngForm" class="row g-3 needs-validation" novalidate>
+      <div class="row">
+          <div class="col-md-6">
+              <label for="email" class="form-label">Email</label>
+              @if(studentId > 0) {
+                <input type="text" class="form-control" id="email" name="email" [(ngModel)]="studentItem.email" readonly>
+              } @else {
+                <input type="text" class="form-control" id="email" name="email" [(ngModel)]="studentItem.email" #email="ngModel" required>
+                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+                  <div *ngIf="email.errors?.['required']">
+                    Email is required.
+                  </div>
+                </div>
+              }
+              
+          </div>
+          <div class="col-md-6">
+            <label for="courseId" class="form-label">Course(s)</label>
+            <mat-select class="form-control" id="courseIdList" name="courseIdList" [(ngModel)]="studentItem.courseIdList" multiple>
+              <mat-option *ngFor="let course of courses" [value]="course.id">
+                {{ course.code }}: {{ course.name }}
+              </mat-option>
+            </mat-select>
+          </div>
+      </div>
+        
+      <div class="row">
+          <div class="col-md-6">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="studentItem.firstName">
+          </div>
+          <div class="col-md-6">
+            <label for="lastName" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="studentItem.lastName">
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+            <label for="phone" class="form-label">Phone</label>
+              <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="studentItem.phone">
+        </div>
+      </div>
+        
+      <div class="row mt-2">
+          <div class="col-12">
+              @if(studentId > 0) {
+                  <button class="btn btn-primary" type="button" (click)="editStudent(studentId, studentForm.value)">Edit Student</button>
+              } @else {
+                  <button class="btn btn-primary" type="button" (click)="createStudent(studentForm.value)">Create Student</button>
+              }
+          </div>
+      </div>
+        
+    </form>
+  </div>
+</div>
