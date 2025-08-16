@@ -1,6 +1,7 @@
 package com.jayden.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,7 +17,8 @@ public class StudentDto implements Serializable {
 	private String lastName;
 	private String email;
 	private String phone;
-	private List<Long> courseIdList;
+	private List<Long> courseIdList = new ArrayList<>();
+	private List<String> courseNameList = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -56,6 +58,12 @@ public class StudentDto implements Serializable {
 		this.courseIdList = courseIdList;
 	}
 	
+	public List<String> getCourseNameList() {
+		return courseNameList;
+	}
+	public void setCourseNameList(List<String> courseNameList) {
+		this.courseNameList = courseNameList;
+	}
 	@Override
 	public int hashCode() {
 		return Objects.hash(email, id);

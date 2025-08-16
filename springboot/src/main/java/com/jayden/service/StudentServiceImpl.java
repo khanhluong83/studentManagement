@@ -100,10 +100,15 @@ public class StudentServiceImpl implements StudentService {
 	private StudentDto convertToDto(Student student) {
 		StudentDto studentDto = modelMapper.map(student, StudentDto.class);
 		if (student.getCourses() != null && student.getCourses().size() > 0) {
-			List<Long> courseIdList = student.getCourses().stream()
-					.map(c -> c.getId())
-					.collect(Collectors.toList());
-			studentDto.setCourseIdList(courseIdList);
+//			List<Long> courseIdList = student.getCourses().stream()
+//					.map(c -> c.getId())
+//					.collect(Collectors.toList());
+//			studentDto.setCourseIdList(courseIdList);
+			
+			student.getCourses().forEach(c -> {
+				studentDto.getCourseIdList().add(c.getId());
+				studentDto.getCourseNameList().add(c.getName());
+			});
 		}
 		return studentDto;
 	}
