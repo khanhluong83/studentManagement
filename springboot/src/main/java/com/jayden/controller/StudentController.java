@@ -79,6 +79,10 @@ public class StudentController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ResponseDto<Void>> deleteStudent(@PathVariable(name = "id") Long id) {
+		Optional<StudentDto> existingStudent = studentService.getById(id);
+		if (!existingStudent.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
 		studentService.deleteById(id);
 		ResponseDto<Void> responseDto = new ResponseDto<>("Student deleted successfully!", "", null);
 		return ResponseEntity.ok(responseDto);

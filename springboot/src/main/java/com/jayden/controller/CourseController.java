@@ -24,6 +24,7 @@ import com.jayden.dto.SearchResultDto;
 import com.jayden.service.CourseService;
 
 import io.micrometer.common.util.StringUtils;
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/course")
@@ -80,6 +81,12 @@ public class CourseController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ResponseDto<Void>> deleteCourse(@PathVariable(name = "id") Long id) {
+		
+		Optional<CourseDto> course = courseService.getById(id);
+		if (!course.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
 		courseService.deleteById(id);
 		ResponseDto<Void> responseDto = new ResponseDto<>("Course deleted successfully!", "", null);
 		return ResponseEntity.ok(responseDto);

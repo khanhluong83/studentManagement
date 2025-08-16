@@ -33,13 +33,13 @@ public class StudentServiceImpl implements StudentService {
 	private ModelMapper modelMapper;
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public long countAll() {
 		return studentRepository.count();
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public List<StudentDto> searchAll(Pageable pageable) {
 		return studentRepository.findAll(pageable).stream()
 				.map(this::convertToDto)
@@ -47,13 +47,13 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Optional<StudentDto> getById(Long id) {
 		return studentRepository.findById(id).map(this::convertToDto);
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Optional<StudentDto> getByEmail(String email) {
 		return Optional.ofNullable(studentRepository.findByEmail(email)).map(this::convertToDto);
 	}

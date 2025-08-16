@@ -27,13 +27,13 @@ public class CourseServiceImpl implements CourseService {
 	private ModelMapper modelMapper;
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public long countAll() {
 		return courseRepository.count();
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public List<CourseDto> searchAll(Pageable pageable) {
 		if (pageable != null) {
 			return courseRepository.findAll(pageable).stream()
@@ -47,13 +47,13 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Optional<CourseDto> getById(Long id) {
 		return courseRepository.findById(id).map(this::convertToDto);
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Optional<CourseDto> getByCode(String code) {
 		return Optional.ofNullable(courseRepository.findByCode(code)).map(this::convertToDto);
 	}
