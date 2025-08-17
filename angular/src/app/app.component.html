@@ -21,6 +21,10 @@
   </div>
 </nav>
 
-<main>
+  <div class="spinner-container" *ngIf="ajaxLoadingService.loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+
+<main class="mx-2">
   <router-outlet />
 </main>

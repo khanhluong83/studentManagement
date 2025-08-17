@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { AjaxLoadingService } from './services/ajax-loading.service';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +7,16 @@ import { Component } from '@angular/core';
   standalone: false,
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements AfterContentChecked {
   title = 'studentManagement';
+
+  ajaxLoadingService = inject(AjaxLoadingService);
+
+  constructor(private cdr: ChangeDetectorRef) {
+  }
+
+  ngAfterContentChecked(): void {
+    this.cdr.detectChanges();
+  }
+
 }
