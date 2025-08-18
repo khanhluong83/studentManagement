@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { StudentService } from '../../services/student.service';
-import { Student } from '../../models/student.type';
+import { BLANK_STUDENT, Student } from '../../models/student.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CourseService } from '../../services/course.service';
@@ -18,7 +18,7 @@ export class StudentFormComponent {
   courseService = inject(CourseService);
 
   studentId: number = 0;
-  studentItem: Student = {id: 0, firstName: "", lastName: "", email: "", phone: "", courseIdList: []};
+  studentItem: Student = BLANK_STUDENT;
   courses: Course[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router) {

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CourseService } from '../../services/course.service';
-import { Course } from '../../models/course.type';
+import { BLANK_COURSE, Course } from '../../models/course.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -14,7 +14,7 @@ export class CourseFormComponent {
 
   courseService = inject(CourseService);
   courseId: number = 0;
-  courseItem: Course = {id: 0, code: "", name: "", startDate: "", endDate: ""};
+  courseItem: Course = BLANK_COURSE;
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.route.params.subscribe((params: any) => {

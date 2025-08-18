@@ -16,7 +16,7 @@ export class StudentListComponent {
 
   studentService = inject(StudentService);
 
-  displayedColumns: String[] = ['id', 'firstName', 'lastName', 'email', 'phone', 'actions'];
+  displayedColumns: String[] = ['id', 'firstName', 'lastName', 'email', 'phone', 'courseNameList', 'actions'];
   dataSource = new MatTableDataSource<Student>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
