@@ -1,10 +1,12 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CourseService } from '../../services/course.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { Course } from '../../models/course.type';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-list',
@@ -12,9 +14,7 @@ import { Course } from '../../models/course.type';
   templateUrl: './course-list.component.html',
   styleUrl: './course-list.component.css'
 })
-export class CourseListComponent {
-
-  courseService = inject(CourseService);
+export class CourseListComponent implements OnInit, OnDestroy {
 
   displayedColumns: String[] = ['id', 'code', 'name', 'startDate', 'endDate', 'actions'];
   dataSource = new MatTableDataSource<Course>([]);
@@ -28,8 +28,9 @@ export class CourseListComponent {
   sortCol = signal<String>('');
   sortDir = signal<String>('');
 
+  subscriptions: Subscription[] = [];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private courseService: CourseService) {
 
   }
 
@@ -41,12 +42,12 @@ export class CourseListComponent {
   }
 
   loadSearch() {
-    this.courseService.getAll(this.pageSize(), this.pageIndex(), this.sortCol(), this.sortDir())
+    const sub = this.courseService.getAll(this.pageSize(), this.pageIndex(), this.sortCol(), this.sortDir())
     .subscribe((searchResult) => {
       this.itemCount.set(searchResult.count);
       this.dataSource.data = searchResult.items;
-    }
-    );
+    });
+    this.subscriptions.push(sub);
   }
 
   onPageChange(event: PageEvent) {
@@ -73,10 +74,24 @@ export class CourseListComponent {
   delete(id: number) {
     const isDeleted = confirm("Do you want to delete the Course?");
     if (isDeleted) {
-      this.courseService.delete(id).subscribe(response => {
-        alert(response.success);
-        this.loadSearch();
-      })
+      const sub = this.courseService.delete(id).subscribe({
+        next: response => {
+              alert(response.success);
+              this.loadSearch();
+            },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 404) {
+            alert(error.error);
+          }
+        }
+      });
+      this.subscriptions.push(sub);
+    }
+  }
+
+  ngOnDestroy(): void {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
     }
   }
 }

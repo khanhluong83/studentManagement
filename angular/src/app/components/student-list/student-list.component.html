@@ -1,6 +1,28 @@
 <h3>Student List</h3>
 
 <div class="row">
+    <form (submit)="loadSearch()">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" name="firstName" id="firstName" [(ngModel)]="searchForm.firstName">
+            </div>
+            <div class="col-md-6">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" name="lastName" id="lastName" [(ngModel)]="searchForm.lastName">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1 ">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+            
+        </div>
+    </form>
+</div>
+
+<div class="row mt-2">
     <div class="col-12 text-end">
         <button class="btn btn-primary" routerLink="/student-add">Add New Student</button>
     </div>

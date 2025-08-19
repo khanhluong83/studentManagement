@@ -6,12 +6,13 @@ import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
 import com.jayden.dto.StudentDto;
+import com.jayden.dto.StudentSearchDto;
 
 public interface StudentService {
 
-	long countAll();
+	long countAll(StudentSearchDto searchDto);
 	
-	List<StudentDto> searchAll(Pageable pageable);
+	List<StudentDto> searchAll(StudentSearchDto searchDto, Pageable pageable);
 	
 	Optional<StudentDto> getById(Long id);
 	

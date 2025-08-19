@@ -1,18 +1,22 @@
 package com.jayden.service;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jayden.dto.StudentDto;
+import com.jayden.dto.StudentSearchDto;
 import com.jayden.entity.Course;
 import com.jayden.entity.Student;
 import com.jayden.repository.CourseRepository;
@@ -34,14 +38,35 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public long countAll() {
-		return studentRepository.count();
+	public long countAll(StudentSearchDto searchDto) {
+		Student searchStudent = new Student();
+		searchStudent.setFirstName(searchDto.getFirstName());
+		searchStudent.setLastName(searchDto.getLastName());
+		
+		ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+				.withMatcher("firstName", match -> match.contains().ignoreCase())
+				.withMatcher("lastName", match -> match.contains().ignoreCase());
+		
+		Example<Student> example = Example.of(searchStudent, exampleMatcher);
+		
+		return studentRepository.count(example);
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public List<StudentDto> searchAll(Pageable pageable) {
-		return studentRepository.findAll(pageable).stream()
+	public List<StudentDto> searchAll(StudentSearchDto searchDto, Pageable pageable) {
+		
+		Student searchStudent = new Student();
+		searchStudent.setFirstName(searchDto.getFirstName());
+		searchStudent.setLastName(searchDto.getLastName());
+		
+		ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+				.withMatcher("firstName", match -> match.contains().ignoreCase())
+				.withMatcher("lastName", match -> match.contains().ignoreCase());
+		
+		Example<Student> example = Example.of(searchStudent, exampleMatcher);
+		
+		return studentRepository.findAll(example, pageable).stream()
 				.map(this::convertToDto)
 				.collect(Collectors.toList());
 	}

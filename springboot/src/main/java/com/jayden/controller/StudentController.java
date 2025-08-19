@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jayden.dto.StudentDto;
-import com.jayden.dto.CourseDto;
 import com.jayden.dto.ResponseDto;
 import com.jayden.dto.SearchResultDto;
+import com.jayden.dto.StudentDto;
+import com.jayden.dto.StudentSearchDto;
 import com.jayden.service.StudentService;
 
 import io.micrometer.common.util.StringUtils;
@@ -34,9 +35,11 @@ public class StudentController {
 	private StudentService studentService;
 	
 	@GetMapping
-	public ResponseEntity<SearchResultDto<StudentDto>> getAllStudents(@PageableDefault(size = 10) Pageable pageable) {
-		long studentCount = studentService.countAll();
-		List<StudentDto> studentList = studentService.searchAll(pageable);
+	public ResponseEntity<SearchResultDto<StudentDto>> getAllStudents(
+			@ModelAttribute StudentSearchDto searchDto,
+			@PageableDefault(size = 10) Pageable pageable) {
+		long studentCount = studentService.countAll(searchDto);
+		List<StudentDto> studentList = studentService.searchAll(searchDto, pageable);
 		var searchResultDto = new SearchResultDto<StudentDto>(studentCount, studentList);
 		
 		return ResponseEntity.ok(searchResultDto);

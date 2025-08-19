@@ -57,9 +57,9 @@
       <div class="row mt-2">
           <div class="col-12">
               @if(courseId > 0) {
-                  <button class="btn btn-primary" type="button" (click)="editCourse(courseId, courseForm.value)">Edit Course</button>
+                  <button class="btn btn-primary" type="button" [disabled]="courseForm.invalid" (click)="editCourse(courseId, courseForm.value)">Edit Course</button>
               } @else {
-                  <button class="btn btn-primary" type="button" (click)="createCourse(courseForm.value)">Create Course</button>
+                  <button class="btn btn-primary" type="button" [disabled]="courseForm.invalid" (click)="createCourse(courseForm.value)">Create Course</button>
               }
           </div>
       </div>

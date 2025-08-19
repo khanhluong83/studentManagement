@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CourseService } from '../../services/course.service';
 import { BLANK_COURSE, Course } from '../../models/course.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-course-form',
@@ -10,32 +11,44 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './course-form.component.html',
   styleUrl: './course-form.component.css'
 })
-export class CourseFormComponent {
+export class CourseFormComponent implements OnInit, OnDestroy {
 
-  courseService = inject(CourseService);
   courseId: number = 0;
-  courseItem: Course = BLANK_COURSE;
+  courseItem: Course = {... BLANK_COURSE};
+  subscriptions: Subscription[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router) {
-    this.route.params.subscribe((params: any) => {
-      this.courseId = params.id;
-    });
+  constructor(private route: ActivatedRoute, private router: Router,
+    private courseService: CourseService
+  ) {
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe((params: any) => {
+      this.courseId = params.id;
+    });
+
     if (this.courseId > 0) {
       this.loadCourse(this.courseId);
     }
   }
 
   loadCourse(id: number) {
-    this.courseService.getById(id).subscribe(response => {
-      this.courseItem = response;
+    const sub = this.courseService.getById(id).subscribe({
+      next: response => {
+              this.courseItem = response;
+            },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 404) {
+          alert(error.error);
+          this.router.navigateByUrl("/course-list");
+        }
+      }
     });
+    this.subscriptions.push(sub);
   }
 
   createCourse(courseForm: Course) {
-    this.courseService.create(courseForm).subscribe({
+    const sub = this.courseService.create(courseForm).subscribe({
       next:  response => {
         alert(response.success);
         this.router.navigate(["/course-list"]);
@@ -45,13 +58,28 @@ export class CourseFormComponent {
           alert(error.error);
         }
       }
-    })
+    });
+    this.subscriptions.push(sub);
   }
 
   editCourse(id: number, courseForm: Course) {
-    this.courseService.update(id, courseForm).subscribe(response => {
-      alert(response.success);
-      this.router.navigate(["/course-list"]);
-    })
+    const sub = this.courseService.update(id, courseForm).subscribe({
+      next: response => {
+              alert(response.success);
+              this.router.navigate(["/course-list"]);
+            },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 400 || error.status === 404) {
+          alert(error.error);
+        }
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+
+  ngOnDestroy(): void {
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }

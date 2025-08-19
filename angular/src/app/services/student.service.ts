@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Student } from '../models/student.type';
 import { SearchResult } from '../models/search-result.type';
 import { ApiResponse } from '../models/api-response.type';
+import { StudentSearch } from '../models/student-search.type';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,17 @@ export class StudentService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(pageSize: number, pageIndex: number,
+  getAll(studentSearch: StudentSearch,
+      pageSize: number, pageIndex: number,
       sortCol: String, sortDir: String
   ) {
     var url = this.API_URL + '?';
+    if (studentSearch.firstName && studentSearch.firstName.length > 0) {
+      url += '&firstName=' + studentSearch.firstName;
+    }
+    if (studentSearch.lastName && studentSearch.lastName.length > 0) {
+      url += '&lastName=' + studentSearch.lastName;
+    }
     url += '&page=' + pageIndex;
     url += '&size=' + pageSize;
     if (sortCol) {
